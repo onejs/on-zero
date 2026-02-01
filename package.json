@@ -64,17 +64,10 @@
     }
   },
   "dependencies": {
-    "@sinclair/typebox": "^0.34.41",
-    "@sinclair/typebox-codegen": "^0.11.1",
-    "@take-out/helpers": "^0.0.61",
-    "@tamagui/constants": "^2.0.0-rc.0",
-    "chokidar": "^4.0.3",
-    "citty": "^0.1.6",
-    "pg": "^8.13.1",
-    "typescript": "^5.9.3",
-    "valibot": "^1.1.0"
+    "@take-out/helpers": "^0.0.61"
   },
   "peerDependencies": {
+    "pg": ">=8.0.0",
     "@rocicorp/zero": ">=0.17",
     "react": "*",
     "react-native": "*"
@@ -82,9 +75,18 @@
   "peerDependenciesMeta": {
     "react-native": {
       "optional": true
+    },
+    "pg": {
+      "optional": true
     }
   },
   "devDependencies": {
+    "typescript": "^5.9.3",
+    "valibot": "^1.1.0",
+    "chokidar": "^4.0.3",
+    "citty": "^0.1.6",
+    "@sinclair/typebox": "^0.34.41",
+    "@sinclair/typebox-codegen": "^0.11.1",
     "@tamagui/build": "^2.0.0-rc.0",
     "@types/node": "^22.10.0",
     "@types/pg": "^8.11.10",

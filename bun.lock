@@ -4,30 +4,30 @@
     "": {
       "name": "over-zero",
       "dependencies": {
-        "@sinclair/typebox": "^0.34.41",
-        "@sinclair/typebox-codegen": "^0.11.1",
         "@take-out/helpers": "^0.0.61",
-        "@tamagui/constants": "^2.0.0-rc.0",
-        "chokidar": "^4.0.3",
-        "citty": "^0.1.6",
-        "pg": "^8.13.1",
-        "typescript": "^5.9.3",
-        "valibot": "^1.1.0",
       },
       "devDependencies": {
+        "@sinclair/typebox": "^0.34.41",
+        "@sinclair/typebox-codegen": "^0.11.1",
         "@tamagui/build": "^2.0.0-rc.0",
         "@types/node": "^22.10.0",
         "@types/pg": "^8.11.10",
         "@types/react": "^19.0.0",
+        "chokidar": "^4.0.3",
+        "citty": "^0.1.6",
         "react": "^19.0.0",
         "react-native": "*",
+        "typescript": "^5.9.3",
+        "valibot": "^1.1.0",
       },
       "peerDependencies": {
         "@rocicorp/zero": ">=0.17",
+        "pg": ">=8.0.0",
         "react": "*",
         "react-native": "*",
       },
       "optionalPeers": [
+        "pg",
         "react-native",
       ],
     },
@@ -699,7 +699,7 @@
 
     "@tamagui/build": ["@tamagui/build@2.0.0-rc.0", "", { "dependencies": { "@babel/core": "^7.25.2", "@babel/preset-typescript": "^7.26.0", "@swc/core": "^1.14.0", "@tamagui/babel-plugin-fully-specified": "2.0.0-rc.0", "@types/fs-extra": "^9.0.13", "babel-plugin-react-compiler": "^1.0.0", "baseline-browser-mapping": "^2.9.15", "chokidar": "^3.5.2", "esbuild": "^0.25.11", "esbuild-plugin-es5": "^2.1.1", "esbuild-register": "^3.6.0", "execa": "^5.0.0", "fast-glob": "^3.2.11", "fs-extra": "^11.2.0", "lodash.debounce": "^4.0.8", "oxc-transform": "^0.95.0", "typescript": "~5.9.2" }, "bin": { "teesx": "teesx.sh", "tamagui-build": "tamagui-build.js" } }, "sha512-/lBUm6etLoBnasRwnQa+LvbxGy/ZjKo6YUWZ9dQ/X3ukFYUoKpdGcGA7jooKuI+lMAxg6mG6TyTHJcu/2pYwVA=="],
 
-    "@tamagui/constants": ["@tamagui/constants@2.0.0-rc.0", "", { "peerDependencies": { "react": "*", "react-native": "*" } }, "sha512-vugi5QLdmsx5lcfEavmi2oiZKQZoTS8jOPqQp57deziW+EBZVTFC/hqUonlEIBVmu0Ka75c2wR/ykfy5+L5JXg=="],
+    "@tamagui/constants": ["@tamagui/constants@2.0.0-rc.0-1769885482630", "", { "peerDependencies": { "react": ">=19", "react-native": "*" } }, "sha512-Wl63ae/weTmydNmbnK+aBuQvAd43L3n3+2vfirqyWkCWPhKJZD75XJnnHEt8tLAy0bZ1hboxnTQAXgpEHSwwxA=="],
 
     "@tybys/wasm-util": ["@tybys/wasm-util@0.10.1", "", { "dependencies": { "tslib": "^2.4.0" } }, "sha512-9tTaPJLSiejZKx+Bmog4uSubteqTvFrVrURwkmHixBo0G4seD0zUxp98E1DzUBJxLQ3NPwXrGKDiVjwx/DpPsg=="],
 
@@ -1461,23 +1461,13 @@
 
     "path-scurry": ["path-scurry@2.0.1", "", { "dependencies": { "lru-cache": "^11.0.0", "minipass": "^7.1.2" } }, "sha512-oWyT4gICAu+kaA7QWk/jvCHWarMKNs6pXOGWKDTr7cw4IGcUbW+PeTfbaQiLGheFRpjo6O9J0PmyMfQPjH71oA=="],
 
-    "pg": ["pg@8.18.0", "", { "dependencies": { "pg-connection-string": "^2.11.0", "pg-pool": "^3.11.0", "pg-protocol": "^1.11.0", "pg-types": "2.2.0", "pgpass": "1.0.5" }, "optionalDependencies": { "pg-cloudflare": "^1.3.0" }, "peerDependencies": { "pg-native": ">=3.0.1" }, "optionalPeers": ["pg-native"] }, "sha512-xqrUDL1b9MbkydY/s+VZ6v+xiMUmOUk7SS9d/1kpyQxoJ6U9AO1oIJyUWVZojbfe5Cc/oluutcgFG4L9RDP1iQ=="],
-
-    "pg-cloudflare": ["pg-cloudflare@1.3.0", "", {}, "sha512-6lswVVSztmHiRtD6I8hw4qP/nDm1EJbKMRhf3HCYaqud7frGysPv7FYJ5noZQdhQtN2xJnimfMtvQq21pdbzyQ=="],
-
-    "pg-connection-string": ["pg-connection-string@2.11.0", "", {}, "sha512-kecgoJwhOpxYU21rZjULrmrBJ698U2RxXofKVzOn5UDj61BPj/qMb7diYUR1nLScCDbrztQFl1TaQZT0t1EtzQ=="],
-
     "pg-format": ["pg-format-fix@1.0.5", "", {}, "sha512-HcXVy9Zk4kn87P0+U9XSxGtenNyknbPB87NreixSBk0lYJy89u+d/zQbS+f/aTTxABQ/B6FH1KdBB5EsGzRS2w=="],
 
     "pg-int8": ["pg-int8@1.0.1", "", {}, "sha512-WCtabS6t3c8SkpDBUlb1kjOs7l66xsGdKpIPZsg4wR+B3+u9UAum2odSsF9tnvxg80h4ZxLWMy4pRjOsFIqQpw=="],
 
-    "pg-pool": ["pg-pool@3.11.0", "", { "peerDependencies": { "pg": ">=8.0" } }, "sha512-MJYfvHwtGp870aeusDh+hg9apvOe2zmpZJpyt+BMtzUWlVqbhFmMK6bOBXLBUPd7iRtIF9fZplDc7KrPN3PN7w=="],
-
     "pg-protocol": ["pg-protocol@1.11.0", "", {}, "sha512-pfsxk2M9M3BuGgDOfuy37VNRRX3jmKgMjcvAcWqNDpZSf4cUmv8HSOl5ViRQFsfARFn0KuUQTgLxVMbNq5NW3g=="],
 
     "pg-types": ["pg-types@2.2.0", "", { "dependencies": { "pg-int8": "1.0.1", "postgres-array": "~2.0.0", "postgres-bytea": "~1.0.0", "postgres-date": "~1.0.4", "postgres-interval": "^1.1.0" } }, "sha512-qTAAlrEsl8s4OiEQY69wDvcMIdQN6wdz5ojQiOy6YRMuynxenON0O5oCpJI6lshc6scgAY8qvJ2On/p+CXY0GA=="],
-
-    "pgpass": ["pgpass@1.0.5", "", { "dependencies": { "split2": "^4.1.0" } }, "sha512-FdW9r/jQZhSeohs1Z3sI1yxFQNFvMcnmfuj4WBMUTxOrAyLMaTcE1aAMBiTlbMNaXvBCQuVi0R7hd8udDSP7ug=="],
 
     "picocolors": ["picocolors@1.1.1", "", {}, "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="],
 
@@ -2018,8 +2008,6 @@
     "@rocicorp/zero/ws": ["ws@8.19.0", "", { "peerDependencies": { "bufferutil": "^4.0.1", "utf-8-validate": ">=5.0.2" }, "optionalPeers": ["bufferutil", "utf-8-validate"] }, "sha512-blAT2mjOEIi0ZzruJfIhb3nps74PRWTCz1IjglWEEpQl5XS/UNama6u2/rjFkDDouqr4L67ry+1aGIALViWjDg=="],
 
     "@sinclair/typebox-codegen/@sinclair/typebox": ["@sinclair/typebox@0.33.22", "", {}, "sha512-auUj4k+f4pyrIVf4GW5UKquSZFHJWri06QgARy9C0t9ZTjJLIuNIrr1yl9bWcJWJ1Gz1vOvYN1D+QPaIlNMVkQ=="],
-
-    "@take-out/helpers/@tamagui/constants": ["@tamagui/constants@2.0.0-rc.0-1769885482630", "", { "peerDependencies": { "react": ">=19", "react-native": "*" } }, "sha512-Wl63ae/weTmydNmbnK+aBuQvAd43L3n3+2vfirqyWkCWPhKJZD75XJnnHEt8tLAy0bZ1hboxnTQAXgpEHSwwxA=="],
 
     "@tamagui/build/chokidar": ["chokidar@3.6.0", "", { "dependencies": { "anymatch": "~3.1.2", "braces": "~3.0.2", "glob-parent": "~5.1.2", "is-binary-path": "~2.1.0", "is-glob": "~4.0.1", "normalize-path": "~3.0.0", "readdirp": "~3.6.0" }, "optionalDependencies": { "fsevents": "~2.3.2" } }, "sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw=="],
 

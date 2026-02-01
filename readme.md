@@ -412,29 +412,6 @@ declare module 'over-zero' {
 }
 ```
 
-### disableInlineQueries
-
-pass `disableInlineQueries: true` to `createZeroClient` to prevent the footgun
-pattern of passing inline queries directly to `useQuery`:
-
-```ts
-const { useQuery } = createZeroClient({
-  schema,
-  models,
-  groupedQueries,
-  disableInlineQueries: true, // recommended
-})
-
-// ✅ allowed: function reference + params
-const [posts] = useQuery(allPosts, { limit: 20 })
-
-// ❌ type error: inline query bypasses synced queries and permissions
-const [posts] = useQuery(zero.query.post.where('userId', id))
-```
-
-this prevents a common footgun where inline queries skip the synced query system
-and server-side permission checks, causing optimistic updates to be reverted.
-
 ## mutation context
 
 every mutation receives `MutatorContext` as first argument:
@@ -468,18 +445,6 @@ export const mutate = mutations(schema, permissions, {
 ```
 
 ## patterns
-
-**client-side optimistic updates:**
-
-```ts
-zero.mutate.message.update(message).client
-```
-
-**wait for server confirmation:**
-
-```ts
-const result = await zero.mutate.message.update(message).server
-```
 
 **server-only mutations:**
 

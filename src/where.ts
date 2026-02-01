@@ -1,10 +1,9 @@
-import { isServer } from '@tamagui/constants'
-import { globalValue } from '@take-out/helpers'
 
 import { getQueryOrMutatorAuthData } from './helpers/getQueryOrMutatorAuthData'
 
-import type { TableName, Where } from './types'
 import type { Condition, ExpressionBuilder } from '@rocicorp/zero'
+import { isServer } from './constants'
+import type { TableName, Where } from './types'
 
 export function where<Table extends TableName, Builder extends Where<Table>>(
   tableName: Table,
@@ -52,10 +51,7 @@ export function where<Table extends TableName, Builder extends Where<Table>>(
 
 // permissions where:
 
-const WhereTableNameMap = globalValue(
-  `over-zero:where-table-map`,
-  () => new WeakMap<Where, TableName>()
-)
+const WhereTableNameMap = new WeakMap<Where, TableName>()
 
 export function getWhereTableName(where: Where) {
   return WhereTableNameMap.get(where)

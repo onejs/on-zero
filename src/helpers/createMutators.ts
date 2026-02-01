@@ -1,8 +1,8 @@
-import { isBrowser, isServer } from '@tamagui/constants'
 import { mapObject, time } from '@take-out/helpers'
 
 import { runWithContext } from './mutatorContext'
 
+import { isBrowser, isServer } from '../constants'
 import type {
   AuthData,
   Can,
