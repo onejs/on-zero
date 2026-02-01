@@ -93,9 +93,9 @@ permissions execute server-side only. on the client they automatically pass. the
 `serverWhere()` helper automatically accesses auth data from `queryContext()` or
 `mutatorContext()` so you don't need to pass it manually.
 
-## mutations
+## models
 
-define schema, permissions, and mutations together:
+models co-locate schema, permissions, and mutations in one file:
 
 ```ts
 // src/data/models/message.ts
@@ -155,6 +155,10 @@ zero.mutate.message.upsert(message)
 ```
 
 ## permissions
+
+over-zero's permissions system is optional - you can implement your own
+permission logic however you like. `serverWhere()` is a light helper for
+RLS-style permissions that automatically integrate with queries and mutations.
 
 permissions use the `serverWhere()` helper to create Zero `ExpressionBuilder`
 conditions:
