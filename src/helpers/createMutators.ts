@@ -1,8 +1,9 @@
 import { mapObject, time } from '@take-out/helpers'
 
+import { isBrowser, isServer } from '../constants'
+import { getAuthData } from '../state'
 import { runWithContext } from './mutatorContext'
 
-import { isBrowser, isServer } from '../constants'
 import type {
   AuthData,
   Can,
@@ -37,7 +38,9 @@ export function createMutators<Models extends GenericModels>({
     return async (tx: Transaction, ...args: Args): Promise<void> => {
       const mutationContext: MutatorContext = {
         tx,
-        authData,
+        // on client, read authData dynamically to avoid stale closure during auth transitions
+        // (ZeroProvider recreates Zero instance in useEffect, but mutations can run before that)
+        authData: isBrowser ? getAuthData() : authData,
         environment,
         can,
         server:

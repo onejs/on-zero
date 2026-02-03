@@ -44,7 +44,11 @@
     "clean": "tamagui-build clean",
     "clean:build": "tamagui-build clean:build",
     "prepublishOnly": "bun run build",
-    "release": "bun ./scripts/release.ts"
+    "release": "bun ./scripts/release.ts",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint --import-plugin",
+    "lint:fix": "oxfmt && oxlint --import-plugin --fix --fix-suggestions"
   },
   "exports": {
     "./package.json": "./package.json",
@@ -90,6 +94,8 @@
     "@types/node": "25.2.0",
     "@types/pg": "^8.11.10",
     "@types/react": "^19.0.0",
+    "oxfmt": "^0.16.0",
+    "oxlint": "^1.31.0",
     "react": "^19.0.0",
     "react-native": "*",
     "typescript": "^5.9.3",

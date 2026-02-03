@@ -27,14 +27,7 @@ import { setAuthData, setSchema } from './state'
 import { setRunner } from './zeroRunner'
 
 import type { AuthData, GenericModels, GetZeroMutators, Where, ZeroEvent } from './types'
-import type {
-  HumanReadable,
-  Query,
-  Row,
-  Schema as ZeroSchema,
-  Zero,
-  ZeroOptions,
-} from '@rocicorp/zero'
+import type { Query, Row, Zero, ZeroOptions, Schema as ZeroSchema } from '@rocicorp/zero'
 
 type PreloadOptions = { ttl?: 'always' | 'never' | number | undefined }
 
@@ -191,16 +184,20 @@ export function createZeroClient<
   }) => {
     const authData = (authDataIn ?? null) as AuthData
 
-    const mutators = useMemo(() => {
-      setAuthData(authData)
+    // update global authData synchronously during render so mutations always have latest auth
+    // (mutations read auth dynamically via getAuthData() to avoid stale closure race condition)
+    setAuthData(authData)
 
+    // mutators only need to be created once since they read auth dynamically
+    const mutators = useMemo(() => {
       return createMutators({
         models,
         environment: 'client',
         authData,
         can: permissionsHelpers.can,
       })
-    }, [authData])
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     // for now we re-parent
     if (disable) {
@@ -209,7 +206,13 @@ export function createZeroClient<
 
     return (
       <AuthDataContext.Provider value={authData}>
-        <ZeroProvider schema={schema} kvStore="mem" mutators={mutators as any} {...props}>
+        <ZeroProvider
+          schema={schema}
+          kvStore="mem"
+          // @ts-expect-error
+          mutators={mutators}
+          {...props}
+        >
           <SetZeroInstance />
           <ConnectionMonitor zeroEvents={zeroEvents} />
           {children}

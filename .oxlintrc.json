@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "import"],
+  "rules": {
+    "import/no-cycle": "error",
+    "no-unused-vars": "off",
+    "no-empty-file": "off",
+    "no-console": "off",
+    "no-async-promise-executor": "off",
+    "no-unused-expressions": "off",
+    "no-invalid-fetch-options": "off",
+    "triple-slash-reference": "off",
+    "no-constant-binary-expression": "off",
+    "unicorn/no-single-promise-in-promise-methods": "off",
+    "unicorn/no-thenable": "off",
+    "oxc/const-comparisons": "off",
+    "react-hooks/exhaustive-deps": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react/jsx-curly-brace-presence": ["warn", { "props": "never", "children": "never" }]
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/types/**",
+    "**/*.d.ts",
+    "types/**"
+  ]
+}

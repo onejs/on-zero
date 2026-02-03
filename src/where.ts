@@ -1,9 +1,8 @@
-
+import { isServer } from './constants'
 import { getQueryOrMutatorAuthData } from './helpers/getQueryOrMutatorAuthData'
 
-import type { Condition, ExpressionBuilder } from '@rocicorp/zero'
-import { isServer } from './constants'
 import type { TableName, Where } from './types'
+import type { Condition, ExpressionBuilder } from '@rocicorp/zero'
 
 export function where<Table extends TableName, Builder extends Where<Table>>(
   tableName: Table,

@@ -1,0 +1,45 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "printWidth": 90,
+  "tabWidth": 2,
+  "useTabs": false,
+  "semi": false,
+  "singleQuote": true,
+  "jsxSingleQuote": false,
+  "trailingComma": "es5",
+  "endOfLine": "lf",
+  "experimentalSortImports": {
+    "groups": [
+      // side effects first
+      ["side-effect", "side-effect-style"],
+      // node builtins
+      ["builtin"],
+      // external packages
+      ["external"],
+      // internal aliases (~)
+      ["internal"],
+      // parent/sibling
+      ["parent", "sibling", "index"],
+      // types
+      ["builtin-type", "external-type", "internal-type", "parent-type", "sibling-type", "index-type"],
+      // styles
+      ["style"],
+      // unknown/other
+      ["unknown"]
+    ],
+    "newlinesBetween": true,
+    "order": "asc",
+    "ignoreCase": true
+  },
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/types/**",
+    "**/*.d.ts",
+    "**/package.json",
+    "**/.vscode/**",
+    "**/.claude/**",
+    "**/tsconfig.json",
+    "**/bun.lock",
+    "**/*.lock"
+  ]
+}
