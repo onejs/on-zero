@@ -1,5 +1,5 @@
 import { resolveQuery, type PlainQueryFn } from './resolveQuery'
-import { getRunner, type RunOptions } from './zeroRunner'
+import { getRunner } from './zeroRunner'
 
 import type {
   AnyQueryRegistry,
@@ -23,7 +23,17 @@ function getCustomQueries(): AnyQueryRegistry {
   return customQueriesRef
 }
 
-// run a query once and return results (non-reactive)
+// execute a query once (non-reactive counterpart to useQuery)
+// defaults to 'unknown', pass 'complete' to have client fetch from server
+export function run<
+  Schema extends ZeroSchema,
+  TTable extends keyof Schema['tables'] & string,
+  TReturn,
+>(
+  query: Query<TTable, Schema, TReturn>,
+  mode?: 'complete'
+): Promise<HumanReadable<TReturn>>
+
 export function run<
   Schema extends ZeroSchema,
   TArg,
@@ -32,7 +42,7 @@ export function run<
 >(
   fn: PlainQueryFn<TArg, Query<TTable, Schema, TReturn>>,
   params: TArg,
-  options?: RunOptions
+  mode?: 'complete'
 ): Promise<HumanReadable<TReturn>>
 
 export function run<
@@ -41,22 +51,34 @@ export function run<
   TReturn,
 >(
   fn: PlainQueryFn<void, Query<TTable, Schema, TReturn>>,
-  options?: RunOptions
+  mode?: 'complete'
 ): Promise<HumanReadable<TReturn>>
 
 export function run(
-  fnArg: any,
-  paramsOrOptions?: any,
-  optionsArg?: RunOptions
+  queryOrFn: any,
+  paramsOrMode?: any,
+  modeArg?: 'complete'
 ): Promise<any> {
-  const hasParams =
-    optionsArg !== undefined || (paramsOrOptions && !('type' in paramsOrOptions))
-  const params = hasParams ? paramsOrOptions : undefined
-  const options = hasParams ? optionsArg : paramsOrOptions
+  const hasParams = modeArg !== undefined || (paramsOrMode && paramsOrMode !== 'complete')
+  const params = hasParams ? paramsOrMode : undefined
+  const mode = hasParams ? modeArg : paramsOrMode
+  const runner = getRunner()
+  const options =
+    mode === 'complete'
+      ? ({
+          type: 'complete',
+        } as const)
+      : undefined
+
+  if (queryOrFn && queryOrFn['ast']) {
+    // inline zql - on client it only resolves against cache, on server fully
+    return runner(queryOrFn, options)
+  }
 
   const customQueries = getCustomQueries()
-  const queryRequest = resolveQuery({ customQueries, fn: fnArg, params })
-  const runner = getRunner()
+  const queryRequest = resolveQuery({ customQueries, fn: queryOrFn, params })
 
-  return runner(queryRequest as any, options)
+  const out = runner(queryRequest as any, options)
+
+  return out
 }
