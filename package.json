@@ -1,6 +1,6 @@
 {
   "name": "on-zero",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "description": "A typed layer over @rocicorp/zero with queries, mutations, and permissions",
   "sideEffects": false,
   "source": "src/index.ts",
@@ -35,6 +35,8 @@
   "scripts": {
     "build": "tamagui-build",
     "watch": "tamagui-build --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "clean": "tamagui-build clean",
     "clean:build": "tamagui-build clean:build",
@@ -69,7 +71,7 @@
     }
   },
   "dependencies": {
-    "@take-out/helpers": "^0.1.23",
+    "@take-out/helpers": "^0.1.24",
     "@sinclair/typebox-codegen": "^0.11.1",
     "chokidar": "^4.0.3",
     "citty": "^0.1.6",
@@ -98,7 +100,8 @@
     "oxlint": "^1.31.0",
     "react": "^19.0.0",
     "react-native": "*",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.1.1"
   },
   "files": [
     "src",
