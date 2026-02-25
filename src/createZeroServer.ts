@@ -8,9 +8,10 @@ import { Pool } from 'pg'
 import { createPermissions } from './createPermissions'
 import { createMutators } from './helpers/createMutators'
 import { isInZeroMutation, mutatorContext } from './helpers/mutatorContext'
+import { runWithQueryContext } from './helpers/queryContext'
 import { getMutationsPermissions } from './modelRegistry'
 import { setCustomQueries } from './run'
-import { getZQL, setAuthData, setSchema } from './state'
+import { getZQL, setSchema } from './state'
 import { setRunner } from './zeroRunner'
 
 import type {
@@ -167,38 +168,45 @@ export function createZeroServer<
       )
     }
 
-    // set authData globally for permission checks in query functions
-    setAuthData(authData || ({} as AuthData))
+    const response = await runWithQueryContext(
+      { authData: authData || ({} as AuthData) },
+      () =>
+        zeroHandleQueryRequest(
+          (name, args) => {
+            // per-model permission queries registered by on-zero at runtime
+            if (name.startsWith('permission.')) {
+              const table = name.slice('permission.'.length)
+              const { objOrId } = args as {
+                objOrId: string | Record<string, any>
+              }
+              const perm = getMutationsPermissions(table)
+              if (!perm) {
+                throw new Error(`[permission] no permission defined for table: ${table}`)
+              }
+              return (getZQL() as any)[table]
+                .where((eb: any) => {
+                  return permissions.buildPermissionQuery(
+                    authData,
+                    eb,
+                    perm,
+                    objOrId,
+                    table
+                  )
+                })
+                .one()
+            }
 
-    const response = await zeroHandleQueryRequest(
-      (name, args) => {
-        // per-model permission queries registered by on-zero at runtime
-        if (name.startsWith('permission.')) {
-          const table = name.slice('permission.'.length)
-          const { objOrId } = args as {
-            objOrId: string | Record<string, any>
-          }
-          const perm = getMutationsPermissions(table)
-          if (!perm) {
-            throw new Error(`[permission] no permission defined for table: ${table}`)
-          }
-          return (getZQL() as any)[table]
-            .where((eb: any) => {
-              return permissions.buildPermissionQuery(authData, eb, perm, objOrId, table)
-            })
-            .one()
-        }
+            // run validation hook if provided (must be sync - throw to reject)
+            if (validateQuery) {
+              validateQuery({ authData, queryName: name, params: args })
+            }
 
-        // run validation hook if provided (must be sync - throw to reject)
-        if (validateQuery) {
-          validateQuery({ authData, queryName: name, params: args })
-        }
-
-        const query = (mustGetQuery as any)(queries, name)
-        return query.fn({ args, ctx: authData })
-      },
-      schema,
-      request
+            const query = (mustGetQuery as any)(queries, name)
+            return query.fn({ args, ctx: authData })
+          },
+          schema,
+          request
+        )
     )
 
     return {
@@ -208,7 +216,8 @@ export function createZeroServer<
 
   const mutate = async (
     run: (tx: Transaction, mutators: GetZeroMutators<Models>) => Promise<void>,
-    authData?: Pick<AuthData, 'email' | 'id'> & Partial<AuthData>
+    authData?: Pick<AuthData, 'email' | 'id'> & Partial<AuthData>,
+    options?: { awaitAsyncTasks?: boolean }
   ) => {
     const asyncTasks: Array<() => Promise<void>> = []
 
@@ -231,7 +240,21 @@ export function createZeroServer<
       await run(tx, mutators)
     })
 
-    await Promise.all(asyncTasks.map((t) => t()))
+    if (asyncTasks.length) {
+      if (options?.awaitAsyncTasks) {
+        await Promise.all(asyncTasks.map((t) => t()))
+      } else {
+        const id = randomId()
+        console.info(`[mutate] running async tasks ${asyncTasks.length} id ${id}`)
+        Promise.all(asyncTasks.map((t) => t()))
+          .then(() => {
+            console.info(`[mutate] async tasks complete ${id}`)
+          })
+          .catch((err) => {
+            console.error(`[mutate] error: async tasks failed`, err)
+          })
+      }
+    }
   }
 
   async function transaction<
@@ -253,11 +276,18 @@ export function createZeroServer<
   }
 
   function query<R>(
-    cb: (q: QueryBuilder) => Query<any, Schema, R>
+    cb: (q: QueryBuilder) => Query<any, Schema, R>,
+    authData?: AuthData | null
   ): Promise<HumanReadable<R>> {
-    return transaction(async (tx) => {
-      return tx.run(cb(getZQL()))
-    }) as any
+    const run = () =>
+      transaction(async (tx) => {
+        return tx.run(cb(getZQL()))
+      }) as any
+
+    if (authData !== undefined) {
+      return runWithQueryContext({ authData }, run)
+    }
+    return run()
   }
 
   // register for global run() helper
