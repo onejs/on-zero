@@ -30,6 +30,7 @@ export function createMutators<Models extends GenericModels>({
   can,
   models,
   validateMutation,
+  mutationValidators,
 }: {
   environment: 'server' | 'client'
   authData: AuthData | null
@@ -38,10 +39,12 @@ export function createMutators<Models extends GenericModels>({
   asyncTasks?: Array<() => Promise<void>>
   createServerActions?: () => Record<string, any>
   validateMutation?: ValidateMutationFn
+  /** valibot schemas keyed by model.mutationName, auto-validates args before running */
+  mutationValidators?: Record<string, Record<string, any>>
 }): GetZeroMutators<Models> {
   const serverActions = createServerActions?.()
 
-  const modelMutators = mapObject(models, (val) => val.mutate) as {
+  const modelMutators = mapObject(models, (val) => val.mutate || {}) as {
     [K in keyof typeof models]: (typeof models)[K]['mutate']
   }
 
@@ -138,18 +141,29 @@ export function createMutators<Models extends GenericModels>({
     mutatorName: string,
     fn: (...args: Args) => Promise<void>
   ) {
-    if (!validateMutation) {
+    const validator = mutationValidators?.[tableName]?.[mutatorName]
+
+    if (!validateMutation && !validator) {
       return fn
     }
 
     return async (...args: Args): Promise<void> => {
       // args[0] is tx, args[1] is the mutation args
-      await validateMutation({
-        authData: isBrowser ? getAuthData() : authData,
-        tableName,
-        mutatorName,
-        args: args[1],
-      })
+      // auto-validate with generated valibot schema first
+      // skip validation for null/undefined args (void mutations send null from zero)
+      if (validator && args[1] != null) {
+        const valibot = await import('valibot')
+        valibot.parse(validator, args[1])
+      }
+      // then run user-provided validation hook as escape hatch
+      if (validateMutation) {
+        await validateMutation({
+          authData: isBrowser ? getAuthData() : authData,
+          tableName,
+          mutatorName,
+          args: args[1],
+        })
+      }
       return fn(...args)
     }
   }
