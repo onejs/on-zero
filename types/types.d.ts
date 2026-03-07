@@ -55,7 +55,7 @@ type GetModelMutators<Models extends GenericModels> = {
 };
 export type GenericModels = {
     [key: string]: {
-        mutate: Record<string, (ctx: MutatorContext, obj?: any) => Promise<any>>;
+        mutate?: Record<string, (ctx: MutatorContext, obj?: any) => Promise<any>>;
         permissions?: Where<any, Condition | boolean>;
     };
 };
@@ -74,5 +74,13 @@ export type ZeroEvent = {
     type: 'error';
     message: string;
 };
+/**
+ * Admin role bypass for permissions:
+ * - 'all': admin bypasses both query and mutation permissions (default)
+ * - 'queries': admin bypasses only query permissions
+ * - 'mutations': admin bypasses only mutation permissions
+ * - 'off': admin has no special bypass
+ */
+export type AdminRoleMode = 'all' | 'queries' | 'mutations' | 'off';
 export {};
 //# sourceMappingURL=types.d.ts.map

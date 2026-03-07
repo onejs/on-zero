@@ -2,6 +2,7 @@ import { useQuery as zeroUseQuery } from '@rocicorp/zero/react';
 import { type Context } from 'react';
 import { type PlainQueryFn } from './resolveQuery';
 import type { AnyQueryRegistry, HumanReadable, Query, Schema as ZeroSchema } from '@rocicorp/zero';
+export type QueryControlMode = false | 'empty' | 'last-value';
 export type UseQueryOptions = {
     enabled?: boolean | undefined;
     ttl?: 'always' | 'never' | number | undefined;
@@ -14,7 +15,7 @@ export type UseQueryHook<Schema extends ZeroSchema> = {
     <TTable extends keyof Schema['tables'] & string, TReturn>(fn: PlainQueryFn<void, Query<TTable, Schema, TReturn>>, options?: UseQueryOptions | boolean): QueryResult<TReturn>;
 };
 export declare function createUseQuery<Schema extends ZeroSchema>({ DisabledContext, customQueries, }: {
-    DisabledContext: Context<boolean>;
+    DisabledContext: Context<QueryControlMode>;
     customQueries: AnyQueryRegistry;
 }): UseQueryHook<Schema>;
 //# sourceMappingURL=createUseQuery.d.ts.map

@@ -1,1 +1,1 @@
-{"version":3,"file":"getQueryOrMutatorAuthData.d.ts","sourceRoot":"","sources":["../../src/helpers/getQueryOrMutatorAuthData.ts"],"names":[],"mappings":"AAGA,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,UAAU,CAAA;AAExC,wBAAgB,yBAAyB,IAAI,QAAQ,GAAG,IAAI,CAM3D"}
+{"version":3,"file":"getQueryOrMutatorAuthData.d.ts","sourceRoot":"","sources":["../../src/helpers/getQueryOrMutatorAuthData.ts"],"names":[],"mappings":"AAIA,OAAO,KAAK,EAAE,QAAQ,EAAE,MAAM,UAAU,CAAA;AAExC,wBAAgB,yBAAyB,IAAI,QAAQ,GAAG,IAAI,CAS3D"}
