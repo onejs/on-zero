@@ -270,7 +270,7 @@ export const mutate = mutations(schema, perm)
     expect(content).toContain('delete:')
   })
 
-  test('skips models without export const mutate', async () => {
+  test('treats models without export const mutate as empty mutations', async () => {
     writeFileSync(
       join(testDir, 'models/readonly.ts'),
       `
@@ -285,6 +285,9 @@ export const schema = table('readonly').columns({
 
     const result = await generate({ dir: testDir, silent: true })
     expect(result.mutationCount).toBe(0)
+
+    const content = readFileSync(join(testDir, 'generated/syncedMutations.ts'), 'utf-8')
+    expect(content).toContain('readonly: {')
   })
 
   test('extracts custom mutations from bare mutations({})', async () => {
@@ -503,6 +506,39 @@ export const mutate = mutations(schema, perm, {
     // description and count should NOT be in the rename validator
     expect(content).not.toMatch(/rename:[\s\S]*description/)
     expect(content).not.toMatch(/rename:[\s\S]*count/)
+  })
+
+  test('skips symbol-keyed properties when resolving imported mutation param types', async () => {
+    writeFileSync(
+      join(testDir, 'models/types.ts'),
+      `
+export type WeirdParams = {
+  id: string
+  [Symbol.iterator]?: () => Iterator<string>
+}
+`
+    )
+
+    writeFileSync(
+      join(testDir, 'models/item.ts'),
+      `
+import { mutations } from 'on-zero'
+import type { WeirdParams } from './types'
+
+export const mutate = mutations({
+  run: async ({ tx }, params: WeirdParams) => {
+    await tx.mutate.item.delete({ id: params.id })
+  },
+})
+`
+    )
+
+    await generate({ dir: testDir, silent: true })
+
+    const content = readFileSync(join(testDir, 'generated/syncedMutations.ts'), 'utf-8')
+    expect(content).toContain('run')
+    expect(content).toContain('id: v.string()')
+    expect(content).not.toContain('__@iterator')
   })
 
   test('resolves imported types in query params', async () => {
